@@ -26,15 +26,15 @@
 
     let timer ;
     const handleChange =(e)=>{
-
-      if (e.target.value.trim() === "") {
+      const searchValue = e.target.value.trim().toLowerCase();
+      if (searchValue.trim() === "") {
         setFilteredMaps(maps); // Restore initial list when cleared
         return;
       }
 
       timer = setTimeout(()=>{
       
-        setFilteredMaps(maps.filter((item)=>item.common.includes(e.target.value)));
+        setFilteredMaps(maps.filter((item)=>item.common.toLowerCase().includes(searchValue)));
       },1000)
 
 
