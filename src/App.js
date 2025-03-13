@@ -1,33 +1,64 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-function App() {
-  const [maps, setMaps] = useState([]);
+  import React, { useEffect, useState } from 'react';
+  import axios from 'axios';
+  import Card from './components/Card/Card';
+  import './App.css';
+
+  function App() {
+    const [maps, setMaps] = useState([]);
+    const [filteredMaps, setFilteredMaps] = useState([]);
 
 
-  //fetch the data
-  useEffect(()=>{
-    const getData= async () =>{
-      try{
-        const response = await axios.get(`https://xcountries-backend.azurewebsites.net/all`);
-        setMaps(response.data);
-        
-      }catch(error){
-        console.error('Error fetching data:', error);
+    //fetch the data
+    useEffect(()=>{
+      const getData= async () =>{
+        try{
+          const response = await axios.get(`https://countries-search-data-prod-812920491762.asia-south1.run.app/countries`);
+          setMaps(response.data);
+          setFilteredMaps(response.data);
+          
+        }catch(error){
+          console.error('Error fetching data:', error);
+        }
       }
+      getData();
+    },[])
+
+
+    let timer ;
+    const handleChange =(e)=>{
+
+      if (e.target.value.trim() === "") {
+        setFilteredMaps(maps); // Restore initial list when cleared
+        return;
+      }
+
+      timer = setTimeout(()=>{
+      
+        setFilteredMaps(maps.filter((item)=>item.common.includes(e.target.value)));
+      },1000)
+
+
     }
 
 
-    getData();
-  },[])
 
 
+    return (
+        <>
+        <header className='search-container'>
+          <input className='search' type = 'text' onChange={handleChange}></input>
+        </header>
+        <section>
+          <div className='container'>
+            {filteredMaps.map((item, index)=>(
+              <Card key={index} item={item}/>
+            ))}
+          </div>
+        </section>
 
+        </>
+      
+    );
+  }
 
-  return (
-      <>
-      </>
-    
-  );
-}
-
-export default App;
+  export default App;
